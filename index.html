@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Stock Sale App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100 text-gray-800 flex flex-col items-center min-h-screen">
+    <div class="container max-w-3xl w-full p-4 sm:p-6 box-border pb-24">
+        <div id="notificationArea" class="fixed top-0 left-1/2 transform -translate-x-1/2 w-11/12 max-w-md p-3 mt-4 rounded-md shadow-lg text-center text-white z-[60] hidden animate-fadeIn"></div>
+
+        <header class="bg-white shadow-md rounded-lg mb-6 p-4 flex justify-between items-center">
+            <h1 class="text-xl font-semibold text-gray-800">Sale App</h1>
+            <button id="menuToggleBtn" class="text-gray-600 hover:text-indigo-600 focus:outline-none" aria-label="Open Menu">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </header>
+
+        <main id="appContainer">
+            <div id="homeScreen" class="screen">
+                <div class="header flex flex-col sm:flex-row sm:flex-wrap justify-between items-stretch mb-6 gap-3">
+                    <div class="total-box bg-white border border-gray-200 rounded-lg p-3 text-center shadow-md w-full sm:w-[calc(33.333%-0.75rem)]"> <h3 id="valueLabel" class="text-base font-semibold text-gray-700 mb-1">Value</h3> <p id="overallValue" class="text-xl font-bold text-blue-600">₹0</p> </div>
+                    <div class="total-box bg-white border border-gray-200 rounded-lg p-3 text-center shadow-md w-full sm:w-[calc(33.333%-0.75rem)]"> <h3 id="volumeLabel" class="text-base font-semibold text-gray-700 mb-1">Volume</h3> <p id="overallVolume" class="text-xl font-bold text-green-600">0</p> </div>
+                    <div class="total-box bg-white border border-gray-200 rounded-lg p-3 text-center shadow-md w-full sm:w-[calc(33.333%-0.75rem)]"> <h3 id="incentiveLabel" class="text-base font-semibold text-gray-700 mb-1">Earning</h3> <p id="overallIncentive" class="text-xl font-bold text-purple-600">₹0</p> </div>
+                </div>
+
+                <div id="saleListContainer" class="mb-20"> <p id="noSalesText" class="text-center text-gray-500 mt-10">No sales found. Add one using the '+' button.</p> </div>
+                <div id="quickAddSection" class="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-300 shadow-lg hidden animate-fadeIn z-45"> <div class="relative max-w-xl mx-auto"> <div id="quickAddModelSuggestions" class="absolute bottom-full left-0 right-0 mb-1 max-h-48 overflow-y-auto bg-white border border-gray-300 rounded-md shadow-lg z-50"></div> <label for="quickAddModelNameInput" class="block text-sm font-medium text-gray-700 mb-1">Enter Model Name to Add Sale:</label> <input type="text" id="quickAddModelNameInput" placeholder="Type model name..." class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"> <button id="cancelQuickAddBtn" class="absolute top-[calc(1.75rem+2px)] right-0 mt-1 mr-1 text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none" aria-label="Cancel Quick Add">&times;</button> <p class="text-xs text-gray-500 mt-1">Select a suggestion or type a new name and press Enter.</p> </div> </div>
+                <button id="quickAddBtn" class="fixed bottom-20 right-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full w-14 h-14 text-3xl flex justify-center items-center cursor-pointer shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 z-40"> + </button>
+            </div>
+
+            <div id="modelListScreen" class="screen hidden">
+                <div class="flex justify-between items-center mb-4"> <h2 class="text-2xl font-semibold text-gray-800">Select Model</h2> <button id="openModelModalBtn" class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-md transition duration-150 ease-in-out text-sm font-medium shadow-sm"> Add Model </button> </div>
+                <div class="mb-4"> <label for="modelSearchInput" class="sr-only">Search Models</label> <input type="text" id="modelSearchInput" placeholder="Search model list..." class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"> </div>
+                 <div id="modelListContainer" class="space-y-3 mb-6"> <p id="noModelsText" class="text-center text-gray-500 mt-10 col-span-full">No models found. Add one using the 'Add Model' button.</p> </div>
+            </div>
+        </main>
+
+        <div id="addEditSaleModal" class="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+           <div class="modal-content bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-lg relative animate-fadeIn">
+                <div class="modal-header flex justify-between items-center mb-4 pb-3 border-b border-gray-200"> <h2 id="saleModalTitle" class="text-xl font-semibold text-gray-800">Edit Sale</h2> <button id="closeSaleModalBtn" class="text-gray-400 hover:text-gray-600 text-3xl font-bold leading-none" aria-label="Close">&times;</button> </div>
+                <div class="modal-body mb-5 max-h-[70vh] overflow-y-auto pr-2">
+                    <form id="addEditSaleForm" class="space-y-4">
+                        <input type="hidden" id="saleId" name="saleId">
+                        <div> <label for="saleDate" class="block mb-1 font-medium text-gray-700">Date <span class="text-red-500">*</span></label> <input type="date" id="saleDate" name="saleDate" required class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"> </div>
+                        <div class="relative"> <label for="saleModelNameInput" class="block mb-1 font-medium text-gray-700">Model Name <span class="text-red-500">*</span></label> <input type="text" id="saleModelNameInput" name="saleModelNameInput" required placeholder="Type to search models..." autocomplete="off" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"> <div id="saleModelSuggestions" class="absolute left-0 right-0 mt-1 max-h-40 overflow-y-auto bg-white border border-gray-300 rounded-md shadow-lg z-[55] hidden"> </div> <input type="hidden" id="saleModelName" name="saleModelName"> <input type="hidden" id="selectedModelId" name="selectedModelId"> </div>
+                        <div> <label for="salePrice" class="block mb-1 font-medium text-gray-700">Price (₹) <span class="text-red-500">*</span></label> <input type="number" id="salePrice" name="salePrice" required min="0" step="any" placeholder="Auto-filled from model" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"> </div>
+                        <div> <label for="saleIncentive" class="block mb-1 font-medium text-gray-700">Incentive (₹) <span class="text-red-500">*</span></label> <input type="number" id="saleIncentive" name="saleIncentive" required min="0" step="any" placeholder="Auto-filled from model" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"> </div>
+                        <div> <label for="saleImei" class="block mb-1 font-medium text-gray-700">IMEI</label> <div class="flex items-center"> <input type="text" id="saleImei" name="saleImei" class="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500"> <button type="button" id="scanImeiBtn" title="Scan IMEI (Feature not implemented)" class="p-2 px-3 border border-l-0 border-gray-300 bg-gray-100 hover:bg-gray-200 rounded-r-md text-gray-600"> <i class="fas fa-barcode"></i> </button> </div> </div>
+                        <div> <label for="saleSelloutSupport" class="block mb-1 font-medium text-gray-700">Sellout Support (₹)</label> <input type="number" id="saleSelloutSupport" name="saleSelloutSupport" value="0" min="0" step="any" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"> </div>
+                        <div> <label for="saleUpgrade" class="block mb-1 font-medium text-gray-700">Upgrade (₹)</label> <input type="number" id="saleUpgrade" name="saleUpgrade" value="0" min="0" step="any" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"> </div>
+                    </form>
+                </div>
+                <div class="modal-footer flex justify-end gap-3 pt-3 border-t border-gray-200"> <button type="button" id="cancelSaleBtn" class="py-2 px-4 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition duration-150 ease-in-out">Cancel</button> <button type="button" id="saveSaleBtn" class="py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition duration-150 ease-in-out">Save Sale</button> </div>
+            </div>
+        </div>
+
+        <div id="modelModal" class="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50"> <div class="modal-content bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-md relative animate-fadeIn"> <div class="modal-header flex justify-between items-center mb-4 pb-3 border-b border-gray-200"> <h2 id="modelModalTitle" class="text-xl font-semibold text-gray-800">Add New Model</h2> <button id="closeModelModalBtn" class="text-gray-400 hover:text-gray-600 text-3xl font-bold leading-none" aria-label="Close">&times;</button> </div> <div class="modal-body mb-5"> <form id="modelForm"> <input type="hidden" id="modelId" name="modelId"> <div class="mb-4"> <label for="modelNameInput" class="block mb-1 font-medium text-gray-700">Model Name:</label> <input type="text" id="modelNameInput" name="modelNameInput" required class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"> </div> <div class="mb-4"> <label for="modelPriceInput" class="block mb-1 font-medium text-gray-700">Price (₹):</label> <input type="number" id="modelPriceInput" name="modelPriceInput" required min="0" step="any" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"> </div> <div class="mb-4"> <label for="modelIncentiveInput" class="block mb-1 font-medium text-gray-700">Incentive (₹):</label> <input type="number" id="modelIncentiveInput" name="modelIncentiveInput" required min="0" step="any" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"> </div> </form> </div> <div class="modal-footer flex justify-end gap-3"> <button type="button" id="cancelModelBtn" class="py-2 px-4 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition duration-150 ease-in-out">Cancel</button> <button type="button" id="saveModelBtn" class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-md transition duration-150 ease-in-out">Save Model</button> </div> </div> </div>
+
+        <div id="confirmationModal" class="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-[70]"> <div class="modal-content bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-sm relative animate-fadeIn"> <h3 id="confirmationTitle" class="text-lg font-semibold mb-4 text-gray-800">Confirm Action</h3> <p id="confirmationMessage" class="text-gray-600 mb-6">Are you sure?</p> <div class="flex justify-end gap-3"> <button id="confirmCancelBtn" class="py-2 px-4 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition duration-150 ease-in-out">Cancel</button> <button id="confirmOkBtn" class="py-2 px-4 bg-red-600 hover:bg-red-700 text-white rounded-md transition duration-150 ease-in-out">OK</button> </div> </div> </div>
+
+    </div> <div id="menuOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity duration-300 ease-in-out"></div>
+
+    <div id="sideMenu" class="fixed top-0 right-0 h-full w-72 bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto">
+        <div class="p-4 space-y-4">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b">
+                <h2 class="text-lg font-semibold text-gray-800">Filters & Actions</h2>
+                <button id="closeMenuBtn" class="text-gray-500 hover:text-red-600" aria-label="Close Menu">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <div>
+                <label for="searchInputMenu" class="block text-sm font-medium text-gray-700 mb-1">Search Sales</label>
+                <input type="text" id="searchInputMenu" placeholder="Search by model name..." class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <div>
+                <label for="sortOptionsMenu" class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+                <select id="sortOptionsMenu" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                    <option value="date-desc">Date (Newest First)</option>
+                    <option value="date-asc">Date (Oldest First)</option>
+                    <option value="price-desc">Price (High to Low)</option>
+                    <option value="price-asc">Price (Low to High)</option>
+                    <option value="name-asc">Model Name (A-Z)</option>
+                    <option value="name-desc">Model Name (Z-A)</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="monthFilterMenu" class="block text-sm font-medium text-gray-700 mb-1">Filter by Month</label>
+                <select id="monthFilterMenu" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                    <option value="all">All Months</option>
+                    </select>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="space-y-3">
+                <button id="exportCsvBtnMenu" class="w-full p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition duration-150 ease-in-out text-sm font-medium shadow-sm"> Export CSV (Filtered) </button>
+                <button id="backupBtnMenu" class="w-full p-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition duration-150 ease-in-out text-sm font-medium shadow-sm"> Backup Data </button>
+                <button id="restoreBtnMenu" class="w-full p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md transition duration-150 ease-in-out text-sm font-medium shadow-sm"> Restore Data </button>
+                <input type="file" id="restoreFileMenu" accept=".json" class="hidden">
+            </div>
+
+        </div>
+    </div>
+
+    <nav class="bg-white rounded-t-lg sm:rounded-lg shadow-md p-2 flex justify-center gap-4 fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200"> <button id="navHomeBtn" class="nav-button py-2 px-5 rounded-md text-sm font-medium transition duration-150 ease-in-out hover:bg-indigo-100 active" data-screen="homeScreen"> Home </button> <button id="navModelsBtn" class="nav-button py-2 px-5 rounded-md text-sm font-medium transition duration-150 ease-in-out hover:bg-indigo-100" data-screen="modelListScreen"> Models </button> </nav>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

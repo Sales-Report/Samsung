@@ -1,0 +1,65 @@
+/* Inter font */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Date input placeholder style (Webkit specific) */
+/* Show placeholder text when empty/invalid */
+input[type="date"]:required:invalid::-webkit-datetime-edit {
+    color: transparent;
+}
+/* Restore color on focus */
+input[type="date"]:focus::-webkit-datetime-edit {
+    color: black !important;
+}
+
+/* Styling for active nav button */
+.nav-button.active {
+    /* These styles will be applied alongside Tailwind classes */
+    background-color: #4f46e5; /* Equivalent to Tailwind's indigo-600 */
+    color: white;
+}
+
+/* Ensure modals are on top */
+/* Using Tailwind z-index classes in HTML (z-50, z-60, z-70) */
+/* .modal { z-index: 50; } */ /* Now handled by Tailwind */
+
+/* Quick Add Section Styling */
+#quickAddSection {
+    z-index: 45; /* Below modals (z-50), above FAB (z-40) */
+}
+
+/* Style for suggestion items on hover */
+#quickAddModelSuggestions div:hover {
+     background-color: #eef2ff; /* Equivalent to Tailwind's indigo-100 */
+}
+
+/* Style for notification bar */
+#notificationArea {
+    /* Basic styling handled by Tailwind in HTML */
+    /* Can add transitions here if needed */
+    transition: opacity 0.5s ease-out;
+}
+
+/* Style for confirmation modal OK button (can customize color) */
+#confirmOkBtn.bg-red-600 { /* Default red for delete */
+    /* Styles defined in HTML */
+}
+#confirmOkBtn.bg-blue-600 { /* Example for other confirmations */
+    /* Styles defined in HTML */
+}
+
+
+/* Note: Most styling is done via Tailwind classes in the HTML.
+   This file contains only custom styles or overrides not easily achievable
+   with standard Tailwind classes or necessary for specific browser behavior. */
+
